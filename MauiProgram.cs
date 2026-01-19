@@ -1,3 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
 using OGSelector.Services;
 using OGSelector.ViewModels;
 

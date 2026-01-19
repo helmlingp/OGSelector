@@ -1,4 +1,9 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 using OGSelector.Models;
 
 namespace OGSelector.Services;
@@ -6,7 +11,7 @@ namespace OGSelector.Services;
 public class JsonDownloadService
 {
     private readonly HttpClient _httpClient;
-    private const string JsonUrl = "https://your-server.com/inputs.json"; // Update with your actual URL
+    private const string JsonUrl = "https://drive.google.com/file/d/1QB4yB4wCj2vVt8GAV1hgSAknmC0PvOFZ/view?usp=sharing"; // Update with your actual URL
 
     public JsonDownloadService()
     {

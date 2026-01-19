@@ -1,11 +1,13 @@
-<Project Sdk="Microsoft.Maui.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0-windows10.0.19041.0</TargetFrameworks>
-        <TargetFrameworks Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">net8.0-windows10.0.19041.0</TargetFrameworks>
+        <WindowsPackageType>None</WindowsPackageType>
+        <TargetFrameworks>net10.0-windows10.0.19041.0</TargetFrameworks>
         <OutputType>WinExe</OutputType>
         <UseMaui>true</UseMaui>
         <SingleProject>true</SingleProject>
-
+        <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
+        <Nullable>enable</Nullable>
+        
         <!-- Display name -->
         <ApplicationTitle>OG Selector</ApplicationTitle>
 
@@ -37,6 +39,8 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+        <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.1" />
     </ItemGroup>
 
 </Project>
