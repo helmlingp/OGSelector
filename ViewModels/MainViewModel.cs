@@ -41,21 +41,18 @@ public partial class MainViewModel : ObservableObject
     {
         _jsonDownloadService = new JsonDownloadService();
         _registryService = new RegistryService();
+        JsonUrl = string.Empty;
     }
 
     [RelayCommand]
     public async Task LoadData()
     {
-        if (string.IsNullOrWhiteSpace(JsonUrl))
-        {
-            StatusMessage = "Please enter a JSON URL";
-            return;
-        }
-
         IsLoading = true;
         StatusMessage = "Loading data...";
 
-        var data = await _jsonDownloadService.DownloadInputsDataAsync(JsonUrl);
+        var data = string.IsNullOrWhiteSpace(JsonUrl) 
+            ? await _jsonDownloadService.LoadFromFileOrUrlAsync()
+            : await _jsonDownloadService.DownloadInputsDataAsync(JsonUrl);
         
         if (data != null)
         {

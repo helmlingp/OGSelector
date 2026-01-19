@@ -38,4 +38,33 @@ public class JsonDownloadService
             return null;
         }
     }
+
+    public async Task<InputsData?> LoadFromFileOrUrlAsync(string? url = null)
+    {
+        // If URL is provided, use it
+        if (!string.IsNullOrWhiteSpace(url))
+        {
+            return await DownloadInputsDataAsync(url);
+        }
+
+        // Try to load from input.json in current directory
+        var localPath = Path.Combine(Directory.GetCurrentDirectory(), "input.json");
+        if (File.Exists(localPath))
+        {
+            try
+            {
+                var content = await File.ReadAllTextAsync(localPath);
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var data = JsonSerializer.Deserialize<InputsData>(content, options);
+                Debug.WriteLine($"Loaded data from local file: {localPath}");
+                return data;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading local JSON file: {ex.Message}");
+            }
+        }
+
+        return null;
+    }
 }
