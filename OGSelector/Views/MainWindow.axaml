@@ -1,0 +1,22 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ns="using.OGSelector.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:OGSelector.Views"
+        
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="OGSelector.Views.MainWindow"
+        Title="OGSelector"
+        Width="1200"
+        Height="800"
+        Background="White"
+        TransparencyLevelHint="Mica"
+        ExtendClientAreaToDecorationsHint="True"
+		WindowStartupLocation="CenterOwner"
+		CanResize="False"
+		Topmost="True"
+        >
+        
+        <views:MainView />
+</Window>

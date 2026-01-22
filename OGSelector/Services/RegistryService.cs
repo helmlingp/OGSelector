@@ -1,12 +1,12 @@
 using System;
 using System.Diagnostics;
 using Microsoft.Win32;
+using OGSelector.Views;
 
 namespace OGSelector.Services;
 
 public class RegistryService
 {
-    private const string RegistryPath = @"SOFTWARE\CUSTOMER";
     private const RegistryHive RootHive = RegistryHive.LocalMachine;
 
     public void SetRegistryKey(string keyName, string value)
@@ -14,7 +14,7 @@ public class RegistryService
         try
         {
             using (var key = RegistryKey.OpenBaseKey(RootHive, RegistryView.Registry64))
-            using (var subKey = key.OpenSubKey(RegistryPath, writable: true) ?? key.CreateSubKey(RegistryPath))
+            using (var subKey = key.OpenSubKey(MainWindow.RegKeyPath, writable: true) ?? key.CreateSubKey(MainWindow.RegKeyPath))
             {
                 subKey?.SetValue(keyName, value, RegistryValueKind.String);
                 Debug.WriteLine($"Registry key set: {keyName} = {value}");
@@ -31,7 +31,7 @@ public class RegistryService
         try
         {
             using (var key = RegistryKey.OpenBaseKey(RootHive, RegistryView.Registry64))
-            using (var subKey = key.OpenSubKey(RegistryPath))
+            using (var subKey = key.OpenSubKey(MainWindow.RegKeyPath))
             {
                 var value = subKey?.GetValue(keyName) as string;
                 return value;
