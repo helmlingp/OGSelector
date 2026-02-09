@@ -12,17 +12,6 @@ class Program
     [STAThread]
     public static void Main(string[] args) => BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);
-    // public static void Main(string[] args)
-    // {
-    //     AvaloniaLocator.CurrentMutable.Bind<Win32PlatformOptions>()
-    //     .ToLazy(() => new Win32PlatformOptions()
-    //     {
-    //         CompositionBackdropCornerRadius = 7
-    //     });
-
-    //     BuildAvaloniaApp()
-    //         .StartWithClassicDesktopLifetime(args);
-    // }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()

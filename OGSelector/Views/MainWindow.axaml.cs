@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Microsoft.Extensions.Configuration;
+using OGSelector.Services;
 using OGSelector.ViewModels;
 using System;
 using System.Threading.Tasks;
@@ -8,12 +9,7 @@ namespace OGSelector.Views;
 
 public partial class MainWindow : Window
 {
-    // change to check local folder, if exist then read, if not read from inside.
-    static IConfiguration config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddEnvironmentVariables()
-    .Build();
-
+    static IConfiguration config = ConfigurationService.BuildConfiguration();
     static Settings settings = config.GetRequiredSection("Settings").Get<Settings>();
 
     private static bool _fullscreen = settings.Fullscreen;
