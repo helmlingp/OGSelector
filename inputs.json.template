@@ -4,7 +4,15 @@
       "uemUuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "uemId": "1001",
       "uemName": "Marketing Department OG",
-      "businessUnit": "Marketing"
+      "businessUnit": "Marketing",
+      "process": [
+        {
+          "processName": "Campaign Management"
+        },
+        {
+          "processName": "Brand Operations"
+        }
+      ]
     },
     {
       "uemUuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",

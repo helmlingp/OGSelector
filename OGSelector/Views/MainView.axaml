@@ -132,6 +132,22 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
+
+                            <StackPanel IsVisible="{Binding HasProcess}">
+                                <Label Classes="p1" Margin="0,15,0,5">Process:</Label>
+                                <ComboBox Name="ProcessComboBox" 
+                                        ItemsSource="{Binding Processes}" 
+                                        SelectedItem="{Binding SelectedProcess}"
+                                        Width="400"
+                                        HorizontalAlignment="Left"
+                                        MaxDropDownHeight="300">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Display}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
                             
                             <Label Classes="p1" Margin="0,15,0,5">Role:</Label>
                             <ComboBox Name="RoleComboBox" 

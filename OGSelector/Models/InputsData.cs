@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OGSelector.Models;
 
@@ -29,8 +30,20 @@ public class BusinessUnit
     [JsonPropertyName("businessUnit")]
     public string BusinessUnitName { get; init; } = string.Empty;
 
+    [JsonPropertyName("process")]
+    public List<ProcessItem> Process { get; init; } = new();
+
     // Display property for UI binding
     public string Display => BusinessUnitName;
+}
+
+public class ProcessItem
+{
+    [JsonPropertyName("processName")]
+    public string ProcessName { get; init; } = string.Empty;
+
+    // Display property for UI binding
+    public string Display => ProcessName;
 }
 
 public class RoleItem

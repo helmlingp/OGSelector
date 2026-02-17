@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -26,6 +28,9 @@ public partial class MainViewModel : ObservableObject
     private ObservableCollection<GeoItem> geos = new();
 
     [ObservableProperty]
+    private ObservableCollection<ProcessItem> processes = new();
+
+    [ObservableProperty]
     private BusinessUnit? selectedBusinessUnit;
 
     [ObservableProperty]
@@ -33,6 +38,12 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private GeoItem? selectedGeo;
+
+    [ObservableProperty]
+    private ProcessItem? selectedProcess;
+
+    [ObservableProperty]
+    private bool hasProcess = false;
 
     [ObservableProperty]
     private bool isLoading = false;
@@ -64,8 +75,14 @@ public partial class MainViewModel : ObservableObject
             if (inputsData != null)
             {
                 BusinessUnits = new ObservableCollection<BusinessUnit>(inputsData.BusinessUnits);
+                
+                SelectedBusinessUnit = BusinessUnits.FirstOrDefault();
                 Roles = new ObservableCollection<RoleItem>(inputsData.Roles);
                 Geos = new ObservableCollection<GeoItem>(inputsData.Geos);
+                Processes = new ObservableCollection<ProcessItem>();
+                HasProcess = Processes.Count > 0;
+                // SelectedProcess = null;
+                SelectedProcess = Processes.FirstOrDefault();
                 HasError = false;
                 StatusMessage = "";
                 System.Diagnostics.Debug.WriteLine("Data loaded successfully into ViewModel");
@@ -99,10 +116,26 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        if (HasProcess && SelectedProcess == null)
+        {
+            StatusMessage = "Please select a Process";
+            return;
+        }
+
         try
         {
-            _registryService.SetRegistryKey("OG", SelectedBusinessUnit.UemName);
-            _registryService.SetRegistryKey("BU", SelectedBusinessUnit.BusinessUnitName);
+            _registryService.SetRegistryKey("OGUuid", SelectedBusinessUnit.UemUuid);
+            _registryService.SetRegistryKey("OGid", SelectedBusinessUnit.UemId);
+            _registryService.SetRegistryKey("OGName", SelectedBusinessUnit.UemName);
+            _registryService.SetRegistryKey("BUName", SelectedBusinessUnit.BusinessUnitName);
+            if (SelectedProcess != null)
+            {
+                _registryService.SetRegistryKey("Process", SelectedProcess.ProcessName);
+            }
+            else
+            {
+                _registryService.SetRegistryKey("Process", string.Empty);
+            }
             _registryService.SetRegistryKey("Roles", SelectedRole.RoleName);
             _registryService.SetRegistryKey("Geos", SelectedGeo.GeoName);
             StatusMessage = "Selections saved to registry successfully";
@@ -126,5 +159,12 @@ public partial class MainViewModel : ObservableObject
         {
             desktop.Shutdown();
         }
+    }
+
+    partial void OnSelectedBusinessUnitChanged(BusinessUnit? value)
+    {
+        Processes = new ObservableCollection<ProcessItem>(value?.Process ?? new List<ProcessItem>());
+        HasProcess = Processes.Count > 0;
+        SelectedProcess = null;
     }
 }
