@@ -16,6 +16,7 @@
 		WindowStartupLocation="CenterOwner"
 		CanResize="False"
 		Topmost="True"
+        
         >
         
         <views:MainView />

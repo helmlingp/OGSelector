@@ -43,4 +43,20 @@ public class RegistryService
             return null;
         }
     }
+
+    public void DeleteRegistryKeyPath()
+    {
+        try
+        {
+            using (var key = RegistryKey.OpenBaseKey(RootHive, RegistryView.Registry64))
+            {
+                key.DeleteSubKeyTree(MainWindow.RegKeyPath, throwOnMissingSubKey: false);
+                Debug.WriteLine($"Registry key deleted: {MainWindow.RegKeyPath}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error deleting registry key: {ex.Message}");
+        }
+    }
 }

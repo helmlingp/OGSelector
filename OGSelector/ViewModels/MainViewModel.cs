@@ -46,6 +46,12 @@ public partial class MainViewModel : ObservableObject
     private bool hasProcess = false;
 
     [ObservableProperty]
+    private bool hasRoles = false;
+
+    [ObservableProperty]
+    private bool hasGeos = false;
+
+    [ObservableProperty]
     private bool isLoading = false;
 
     [ObservableProperty]
@@ -75,14 +81,11 @@ public partial class MainViewModel : ObservableObject
             if (inputsData != null)
             {
                 BusinessUnits = new ObservableCollection<BusinessUnit>(inputsData.BusinessUnits);
-                
+
                 SelectedBusinessUnit = BusinessUnits.FirstOrDefault();
-                Roles = new ObservableCollection<RoleItem>(inputsData.Roles);
-                Geos = new ObservableCollection<GeoItem>(inputsData.Geos);
-                Processes = new ObservableCollection<ProcessItem>();
-                HasProcess = Processes.Count > 0;
-                // SelectedProcess = null;
-                SelectedProcess = Processes.FirstOrDefault();
+                /* Roles = new ObservableCollection<RoleItem>(SelectedBusinessUnit?.Roles ?? new List<RoleItem>());
+                Geos = new ObservableCollection<GeoItem>(SelectedBusinessUnit?.Geos ?? new List<GeoItem>());
+                Processes = new ObservableCollection<ProcessItem>(SelectedBusinessUnit?.Process ?? new List<ProcessItem>()); */
                 HasError = false;
                 StatusMessage = "";
                 System.Diagnostics.Debug.WriteLine("Data loaded successfully into ViewModel");
@@ -110,9 +113,9 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public void Submit()
     {
-        if (SelectedBusinessUnit == null || SelectedRole == null || SelectedGeo == null)
+        if (SelectedBusinessUnit == null)
         {
-            StatusMessage = "Please select a Business Unit, Role, and Geography";
+            StatusMessage = "Please select a Business Unit";
             return;
         }
 
@@ -122,8 +125,24 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
+        if (HasRoles && SelectedRole == null)
+        {
+            StatusMessage = "Please select a Role";
+            return;
+        }
+
+        if (HasGeos && SelectedGeo == null)
+        {
+            StatusMessage = "Please select a Geography";
+            return;
+        }
+
         try
         {
+            // Delete previous registry key path
+            _registryService.DeleteRegistryKeyPath();
+            
+            // Save selections to registry
             _registryService.SetRegistryKey("OGUuid", SelectedBusinessUnit.UemUuid);
             _registryService.SetRegistryKey("OGid", SelectedBusinessUnit.UemId);
             _registryService.SetRegistryKey("OGName", SelectedBusinessUnit.UemName);
@@ -131,13 +150,31 @@ public partial class MainViewModel : ObservableObject
             if (SelectedProcess != null)
             {
                 _registryService.SetRegistryKey("Process", SelectedProcess.ProcessName);
+                _registryService.SetRegistryKey("ProcessTagUuid", SelectedProcess.ProcessTagUuid);
             }
             else
             {
                 _registryService.SetRegistryKey("Process", string.Empty);
+                _registryService.SetRegistryKey("ProcessTagUuid", string.Empty);
             }
-            _registryService.SetRegistryKey("Roles", SelectedRole.RoleName);
-            _registryService.SetRegistryKey("Geos", SelectedGeo.GeoName);
+            if (SelectedRole != null)
+            {
+                _registryService.SetRegistryKey("Roles", SelectedRole.RoleName);
+                _registryService.SetRegistryKey("RolesTagUuid", SelectedRole.RoleTagUuid);
+            } else
+            {
+                _registryService.SetRegistryKey("Roles", string.Empty);
+                _registryService.SetRegistryKey("RolesTagUuid", string.Empty);
+            }
+            if (SelectedGeo != null)
+            {
+                _registryService.SetRegistryKey("Geos", SelectedGeo.GeoName);
+                _registryService.SetRegistryKey("GeosTagUuid", SelectedGeo.GeoTagUuid);
+            } else
+            {
+                _registryService.SetRegistryKey("Geos", string.Empty);
+                _registryService.SetRegistryKey("GeosTagUuid", string.Empty);
+            }
             StatusMessage = "Selections saved to registry successfully";
             
             // Close the application after successful submission
@@ -163,8 +200,14 @@ public partial class MainViewModel : ObservableObject
 
     partial void OnSelectedBusinessUnitChanged(BusinessUnit? value)
     {
+        Roles = new ObservableCollection<RoleItem>(value?.Roles ?? new List<RoleItem>());
+        Geos = new ObservableCollection<GeoItem>(value?.Geos ?? new List<GeoItem>());
         Processes = new ObservableCollection<ProcessItem>(value?.Process ?? new List<ProcessItem>());
         HasProcess = Processes.Count > 0;
-        SelectedProcess = null;
+        HasRoles = Roles.Count > 0;
+        HasGeos = Geos.Count > 0;
+        SelectedRole = Roles.FirstOrDefault();
+        SelectedGeo = Geos.FirstOrDefault();
+        SelectedProcess = Processes.FirstOrDefault();
     }
 }

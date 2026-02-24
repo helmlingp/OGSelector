@@ -8,12 +8,6 @@ public class InputsData
 {
     [JsonPropertyName("BUs")]
     public List<BusinessUnit> BusinessUnits { get; set; } = new();
-
-    [JsonPropertyName("Roles")]
-    public List<RoleItem> Roles { get; set; } = new();
-
-    [JsonPropertyName("Geos")]
-    public List<GeoItem> Geos { get; set; } = new();
 }
 
 public class BusinessUnit
@@ -30,6 +24,12 @@ public class BusinessUnit
     [JsonPropertyName("businessUnit")]
     public string BusinessUnitName { get; init; } = string.Empty;
 
+    [JsonPropertyName("Geos")]
+    public List<GeoItem> Geos { get; init; } = new();
+
+    [JsonPropertyName("Roles")]
+    public List<RoleItem> Roles { get; init; } = new();
+
     [JsonPropertyName("process")]
     public List<ProcessItem> Process { get; init; } = new();
 
@@ -42,6 +42,9 @@ public class ProcessItem
     [JsonPropertyName("processName")]
     public string ProcessName { get; init; } = string.Empty;
 
+    [JsonPropertyName("processUuid")]
+    public string ProcessTagUuid { get; init; } = string.Empty;
+
     // Display property for UI binding
     public string Display => ProcessName;
 }
@@ -51,6 +54,9 @@ public class RoleItem
     [JsonPropertyName("roleName")]
     public string RoleName { get; init; } = string.Empty;
 
+    [JsonPropertyName("roleUuid")]
+    public string RoleTagUuid { get; init; } = string.Empty;
+
     // Display property for UI binding
     public string Display => RoleName;
 }
@@ -59,6 +65,9 @@ public class GeoItem
 {
     [JsonPropertyName("geoName")]
     public string GeoName { get; init; } = string.Empty;
+
+    [JsonPropertyName("geoUuid")]
+    public string GeoTagUuid { get; init; } = string.Empty;
 
     // Display property for UI binding
     public string Display => GeoName;

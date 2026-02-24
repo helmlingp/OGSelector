@@ -149,33 +149,37 @@
                                 </ComboBox>
                             </StackPanel>
                             
-                            <Label Classes="p1" Margin="0,15,0,5">Role:</Label>
-                            <ComboBox Name="RoleComboBox" 
-                                    ItemsSource="{Binding Roles}" 
-                                    SelectedItem="{Binding SelectedRole}"
-                                    Width="400"
-                                    HorizontalAlignment="Left"
-                                    MaxDropDownHeight="300">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Display}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                            <StackPanel IsVisible="{Binding HasRoles}">
+                                <Label Classes="p1" Margin="0,15,0,5">Role:</Label>
+                                <ComboBox Name="RoleComboBox" 
+                                        ItemsSource="{Binding Roles}" 
+                                        SelectedItem="{Binding SelectedRole}"
+                                        Width="400"
+                                        HorizontalAlignment="Left"
+                                        MaxDropDownHeight="300">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Display}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
                             
-                            <Label Classes="p1" Margin="0,15,0,5">Geography:</Label>
-                            <ComboBox Name="GeoComboBox" 
-                                    ItemsSource="{Binding Geos}" 
-                                    SelectedItem="{Binding SelectedGeo}"
-                                    Width="400"
-                                    HorizontalAlignment="Left"
-                                    MaxDropDownHeight="300">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Display}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                            <StackPanel IsVisible="{Binding HasGeos}">
+                                <Label Classes="p1" Margin="0,15,0,5">Geo:</Label>
+                                <ComboBox Name="GeoComboBox" 
+                                        ItemsSource="{Binding Geos}" 
+                                        SelectedItem="{Binding SelectedGeo}"
+                                        Width="400"
+                                        HorizontalAlignment="Left"
+                                        MaxDropDownHeight="300">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Display}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
                             
                             <Button Name="SubmitButton" 
                                     Command="{Binding SubmitCommand}"
