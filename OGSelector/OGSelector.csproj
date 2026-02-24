@@ -13,10 +13,13 @@
 
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Description>A tool to ask the user which BU they belong to and move the device to the correct OG</Description>
+    <Description>A tool to ask the user which BU, Geo, Role, Geo and Process they belong to and write to the registry</Description>
     <Copyright>@helmlingp</Copyright>
     <PackageIcon>logo.ico</PackageIcon>
     <ApplicationIcon>logo.ico</ApplicationIcon>
+    <Version>1.1.5</Version>
+    <AssemblyVersion>1.1.5</AssemblyVersion>
+    <FileVersion>1.1.5</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
