@@ -89,9 +89,9 @@ Before deployment, customize the configuration:
     "ErrorInformation": "An error occurred during the configuration process for this device. \n\nPlease contact your IT Support."
   },
   "Settings": {
-    "jsonURL": "",
-    "Fullscreen": false,
-    "AllowExit": true,
+    "jsonURL": "https://config.company.com/inputs.json",
+    "Fullscreen": true,
+    "AllowExit": false,
     "RegKeyPath": "HKEY_LOCAL_MACHINE\\SOFTWARE\\CUSTOMER"
   }
 }
@@ -99,7 +99,7 @@ Before deployment, customize the configuration:
 
 **Key Settings to Customize:**
 - `jsonURL`: Set to your hosted inputs.json URL (or leave blank for local file)
-- `Fullscreen`: Set to `true` for kiosk mode
+- `Fullscreen`: Set to `true` for kiosk / lockdown mode
 - `AllowExit`: Set to `false` to prevent users from closing
 - `RegKeyPath`: Update to match your organization's registry structure
 - `UI.*`: Customize all user-facing text
@@ -115,20 +115,24 @@ Create or download your `inputs.json` file:
       "uemUuid": "uuid-value-here",
       "uemId": "1001",
       "uemName": "OG Name in UEM",
-      "businessUnit": "Display Name for Users"
+      "businessUnit": "Display Name for Users",
+      "Roles": [
+        {"roleName": "Executive", "roleUuid": "role-uuid-1"},
+        {"roleName": "Manager", "roleUuid": "role-uuid-2"},
+        {"roleName": "Employee", "roleUuid": "role-uuid-3"},
+        {"roleName": "Contractor", "roleUuid": "role-uuid-4"}
+      ],
+      "Geos": [
+        {"geoName": "North America", "geoUuid": "geo-uuid-1"},
+        {"geoName": "Europe", "geoUuid": "geo-uuid-2"},
+        {"geoName": "Asia Pacific", "geoUuid": "geo-uuid-3"},
+        {"geoName": "Latin America", "geoUuid": "geo-uuid-4"}
+      ],
+      "process": [
+        {"processName": "Process 1", "processUuid": "process-uuid-1"},
+        {"processName": "Process 2", "processUuid": "process-uuid-2"}
+      ]
     }
-  ],
-  "Roles": [
-    {"roleName": "Executive"},
-    {"roleName": "Manager"},
-    {"roleName": "Employee"},
-    {"roleName": "Contractor"}
-  ],
-  "Geos": [
-    {"geoName": "North America"},
-    {"geoName": "Europe"},
-    {"geoName": "Asia Pacific"},
-    {"geoName": "Latin America"}
   ]
 }
 ```
@@ -157,76 +161,24 @@ Recommended dimensions: 200x50 pixels (or similar aspect ratio)
 
 1. **Create Application Package:**
    - Package Type: Public/Internal Application
-   - File Type: EXE
-   - Upload `OGSelector.exe`
-
-2. **Add Configuration Files:**
-   - Under "Files/Actions" tab
+   - File Type: ZIP
+   - Name: `OGSelector.ZIP`
    - Add `appsettings.json` to be deployed alongside exe
    - Add `inputs.json` (if not using remote URL)
    - Add `logo.png` (if applicable)
+   - Add `uem-install.ps1`
+   - Add `uem-ininstall.ps1`
 
 3. **Configure Installation:**
-   - Install Command: `OGSelector.exe` (if running immediately)
-   - Or: Deploy files to `C:\Program Files\OGSelector\`
-   - Install Context: System/Device
-
-4. **Set Command-Line Arguments** (if using remote JSON):
-   - Install Arguments: `"https://your-server.com/inputs.json"`
-
-5. **Configure Smart Groups:**
-   - Assign to appropriate device groups
-   - Set to "Auto" install
-
-6. **Optional: Run at Login:**
-   - Create a Product Provisioning profile
-   - Set as Mandatory application
-   - Configure to run at user login
-
-#### Microsoft Intune
-
-1. **Create Win32 App:**
-   - Package using Content Prep Tool
-   - Upload `.intunewin` package
-
-2. **Configure Installation:**
-   - Install command: `OGSelector.exe`
-   - Uninstall command: `cmd /c del /f OGSelector.exe`
-   - Detection rules: File existence check
+   - Install Command: `powershell.exe -ep bypass -file ./uem-install.ps1`
+   - Uninstall command: `powershell.exe -ep bypass -file ./uem-uninstall.ps1`
+   - Detection rules: File Exists: `%PROGRAMDATA%\Airwatch\OGSelector.exe`
+   - Install Context: USER
+   - Admin Privileges: YES
 
 3. **Assign to Groups:**
    - Required assignment for enrollment devices
    - User or device context
-
-#### SCCM/Configuration Manager
-
-1. **Create Application:**
-   - Deployment Type: Script Installer
-   - Content Location: UNC path to files
-
-2. **Configure Detection:**
-   - Registry key detection
-   - File system detection
-
-3. **Deploy:**
-   - Required deployment to device collections
-   - Schedule installation during enrollment
-
-### Method 3: Startup/Login Script
-
-Deploy via Group Policy or login script:
-
-```batch
-@echo off
-REM Copy files to local machine
-xcopy "\\server\share\OGSelector\*" "C:\Program Files\OGSelector\" /Y /I /Q
-
-REM Run the application
-"C:\Program Files\OGSelector\OGSelector.exe"
-
-REM Optional: Pass remote URL
-REM "C:\Program Files\OGSelector\OGSelector.exe" "https://example.com/inputs.json"
-```
 
 ### Method 4: Remote JSON Hosting
 
@@ -245,47 +197,13 @@ Host `inputs.json` on a web server for centralized management:
    }
    ```
 
-3. **Deploy only the executable and appsettings.json**
+3. **Deploy without the inputs.json**
    - Application downloads `inputs.json` on each run
    - Ensures users always get latest data
 
 4. **Update Process:**
    - Update `inputs.json` on web server
    - All clients get updates automatically on next run
-
-## Kiosk Mode Deployment
-
-For enrollment kiosks or locked-down scenarios:
-
-### Configuration
-```json
-{
-  "Settings": {
-    "Fullscreen": true,
-    "AllowExit": false,
-    "jsonURL": "https://config.company.com/inputs.json"
-  }
-}
-```
-
-### Windows Kiosk Setup
-
-1. **Create a Kiosk User Account**
-2. **Configure Windows Kiosk Mode:**
-   - Settings > Accounts > Family & other users
-   - Set up a kiosk
-   - Choose OGSelector.exe as the kiosk app
-
-3. **Alternative: Shell Launcher:**
-   ```xml
-   <ShellLauncherConfiguration>
-     <Shell Shell="C:\Program Files\OGSelector\OGSelector.exe" />
-   </ShellLauncherConfiguration>
-   ```
-
-4. **Auto-Restart on Exit:**
-   - Configure with Task Scheduler
-   - Monitor process and restart if closed
 
 ## Post-Deployment Verification
 
@@ -308,12 +226,16 @@ Get-ItemProperty -Path "HKLM:\SOFTWARE\CUSTOMER"
 ```
 
 Expected keys:
-- BusinessUnit
-- Role
-- Geography
-- uemUuid
-- uemId
-- uemName
+- `OGUuid`: UEM UUID from selected Business Unit
+- `OGid`: UEM ID from selected Business Unit
+- `OGName`: UEM Name from selected Business Unit
+- `BUName`: Display name of selected Business Unit
+- `Roles`: Selected Role name (empty if no role available)
+- `RolesTagUuid`: UUID of selected Role (empty if no role)
+- `Geos`: Selected Geography name (empty if no geo available)
+- `GeosTagUuid`: UUID of selected Geography (empty if no geo)
+- `Process`: Selected Process name (empty if no process available)
+- `ProcessTagUuid`: UUID of selected Process (empty if no process)
 
 ### 3. Test Remote Loading (if applicable)
 
@@ -428,15 +350,18 @@ If issues occur:
    - Remove application assignment in UEM
    - Push previous version
 
-2. **Registry Cleanup:**
+2. **Uninstall:**
+   - Run the `uem-uninstall.ps1` script
+
    ```powershell
-   Remove-ItemProperty -Path "HKLM:\SOFTWARE\CUSTOMER" -Name "BusinessUnit","Role","Geography","uemUuid","uemId","uemName"
+   $patterns = '*.json','OGSelector.exe'
+   Get-ChildItem -Recurse -File | Where-Object { $name = $_.Name;   $patterns | Where-Object { $name -like $_ }} | Remove-Item -Force
    ```
 
-3. **File Removal:**
-   ```batch
-   del "C:\Program Files\OGSelector\*" /F /Q
-   rmdir "C:\Program Files\OGSelector"
+   - Remove Registry Entries
+
+   ```powershell
+   Remove-ItemProperty -Path "HKLM:\SOFTWARE\CUSTOMER" -Name "OGUuid","OGid","OGName","BUName","Roles","RolesTagUuid","Geos","GeosTagUuid","Process","ProcessTagUuid" -Force -ErrorAction SilentlyContinue
    ```
 
 ## Support and Monitoring
@@ -452,14 +377,30 @@ OGSelector.exe 2>&1 | Tee-Object -FilePath "C:\Logs\OGSelector.log"
 
 ### Monitoring Registry Keys
 
-Use Workspace ONE Intelligence, Intune Reports, or custom scripts:
+Use Workspace ONE UEM Sensors:
 
 ```powershell
-$devices = Get-ADComputer -Filter * -Properties *
-foreach ($device in $devices) {
-    $regPath = "\\$($device.Name)\HKLM\SOFTWARE\CUSTOMER"
-    # Check registry values
+# Description: Read and return registry value
+# Execution Context: SYSTEM
+# Execution Architecture: EITHER64OR32BIT
+# Return Type: STRING
+
+# Define the registry key variables
+$keyPath = "HKLM:\SOFTWARE\CUSTOMER"
+$valueName = "OGUuid"
+
+# Check if the registry key path exists
+if (Test-Path $keyPath) {
+    # Get the value of the registry value
+    $value = Get-ItemProperty -Path $keyPath -Name $valueName -ErrorAction SilentlyContinue
+    # Check if the value is not null (i.e., the value exists)
+    if ($value -ne $null) {
+        return $value.$valueName
+    }
+    else { return "" }
 }
+else { return "" }
+
 ```
 
 ### User Feedback

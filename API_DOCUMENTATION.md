@@ -2,6 +2,34 @@
 
 ## Services
 
+### ConfigurationService
+
+Manages loading application configuration from `appsettings.json`.
+
+#### Methods
+
+##### `BuildConfiguration()`
+
+Builds and returns an IConfiguration object from `appsettings.json`.
+
+**Returns:**
+- `IConfiguration`: Configuration object with all settings
+
+**Behavior:**
+1. Checks current working directory for `appsettings.json`
+2. Falls back to application directory if not found in current directory
+3. Exports configuration file from app directory to current directory if needed
+4. Loads from environment variables as override layer
+5. Returns built configuration object
+
+**Example:**
+```csharp
+var config = ConfigurationService.BuildConfiguration();
+var settings = config.GetSection("Settings").Get<Settings>();
+```
+
+---
+
 ### JsonDownloadService
 
 Handles loading configuration data from local files or remote URLs.
@@ -59,7 +87,7 @@ Writes a string value to the configured registry path.
 **Example:**
 ```csharp
 var service = new RegistryService();
-service.SetRegistryKey("BusinessUnit", "Marketing");
+service.SetRegistryKey("BUName", "Marketing");
 ```
 
 ##### `GetRegistryKey(string keyName)`
@@ -75,11 +103,21 @@ Reads a string value from the configured registry path.
 **Example:**
 ```csharp
 var service = new RegistryService();
-var value = service.GetRegistryKey("BusinessUnit");
+var value = service.GetRegistryKey("BUName");
 if (value != null)
 {
     Console.WriteLine($"Business Unit: {value}");
 }
+```
+
+##### `DeleteRegistryKeyPath()`
+
+Deletes the entire configured registry path and all values.
+
+**Example:**
+```csharp
+var service = new RegistryService();
+service.DeleteRegistryKeyPath();
 ```
 
 ---
@@ -95,12 +133,14 @@ The main view model that manages application state and user interactions.
 ##### Observable Collections
 
 - **`BusinessUnits`** (`ObservableCollection<BusinessUnit>`): List of available business units
-- **`Roles`** (`ObservableCollection<RoleItem>`): List of available roles
-- **`Geos`** (`ObservableCollection<GeoItem>`): List of available geographies
+- **`Processes`** (`ObservableCollection<ProcessItem>`): List of available processes (if applicable)
+- **`Roles`** (`ObservableCollection<RoleItem>`): List of available roles (if applicable)
+- **`Geos`** (`ObservableCollection<GeoItem>`): List of available geographies (if applicable)
 
 ##### Selected Items
 
 - **`SelectedBusinessUnit`** (`BusinessUnit?`): Currently selected business unit
+- **`SelectedProcess`** (`ProcessItem?`): Currently selected process
 - **`SelectedRole`** (`RoleItem?`): Currently selected role
 - **`SelectedGeo`** (`GeoItem?`): Currently selected geography
 
@@ -108,7 +148,9 @@ The main view model that manages application state and user interactions.
 
 - **`IsLoading`** (`bool`): Indicates if data is currently being loaded
 - **`StatusMessage`** (`string`): Status or error message to display
-- **`HasError`** (`bool`): Indicates if an error has occurred
+- **`HasProcess`** (`bool`): Indicates if processes are available for selected BU
+- **`HasRoles`** (`bool`): Indicates if roles are available for selected BU
+- **`HasGeos`** (`bool`): Indicates if geographies are available for selected BU
 
 #### Methods
 
@@ -124,9 +166,9 @@ Loads data from JSON source and populates the collections.
 
 **Effects:**
 - Sets `IsLoading` to true during loading
-- Populates `BusinessUnits`, `Roles`, and `Geos` collections
-- Sets `HasError` to true if loading fails
-- Updates `StatusMessage` with error details
+- Populates `BusinessUnits` collection
+- Sets availability flags (`HasProcess`, `HasRoles`, `HasGeos`)
+- Updates `StatusMessage` with error details if loading fails
 
 **Example:**
 ```csharp
@@ -144,16 +186,29 @@ Validates selections and writes them to the registry.
 ```
 
 **Validation:**
-- Ensures all three selections (BusinessUnit, Role, Geo) are made
+- Ensures Business Unit is selected (required)
+- Ensures Process is selected if processes are available
+- Ensures Role is selected if roles are available
+- Ensures Geography is selected if geographies are available
 - Sets `StatusMessage` if validation fails
 
 **Registry Keys Written:**
-- `BusinessUnit`: Selected business unit name
-- `Role`: Selected role name
-- `Geography`: Selected geography name
-- `uemUuid`: UUID from selected business unit
-- `uemId`: ID from selected business unit
-- `uemName`: Name from selected business unit
+- `OGUuid`: UUID from selected business unit
+- `OGid`: ID from selected business unit
+- `OGName`: Name from selected business unit
+- `BUName`: Display name of selected business unit
+- `Process`: Selected process name (empty if N/A)
+- `ProcessTagUuid`: UUID of selected process (empty if N/A)
+- `Roles`: Selected role name (empty if N/A)
+- `RolesTagUuid`: UUID of selected role (empty if N/A)
+- `Geos`: Selected geography name (empty if N/A)
+- `GeosTagUuid`: UUID of selected geography (empty if N/A)
+
+**Example:**
+```csharp
+// Via XAML binding
+<Button Command="{Binding SubmitCommand}" Content="Submit" />
+```
 
 ---
 
@@ -165,15 +220,11 @@ Root container for all configuration data.
 
 **Properties:**
 - `BusinessUnits` (`List<BusinessUnit>`): List of business units
-- `Roles` (`List<RoleItem>`): List of roles
-- `Geos` (`List<GeoItem>`): List of geographies
 
 **JSON Mapping:**
 ```json
 {
-  "BUs": [...],
-  "Roles": [...],
-  "Geos": [...]
+  "BUs": [...]
 }
 ```
 
@@ -181,13 +232,16 @@ Root container for all configuration data.
 
 ### BusinessUnit
 
-Represents an organizational group/business unit.
+Represents an organizational group/business unit with associated options.
 
 **Properties:**
 - `UemUuid` (string): Unique identifier for the OG
 - `UemId` (string): Numeric identifier
 - `UemName` (string): Name in UEM system
 - `BusinessUnitName` (string): User-facing name
+- `Roles` (`List<RoleItem>`): Available roles for this BU
+- `Geos` (`List<GeoItem>`): Available geographies for this BU
+- `Process` (`List<ProcessItem>`): Available processes for this BU
 - `Display` (string): Computed property for UI binding (returns BusinessUnitName)
 
 **JSON Example:**
@@ -196,7 +250,10 @@ Represents an organizational group/business unit.
   "uemUuid": "a1b2c3d4-e5f6-7890",
   "uemId": "1001",
   "uemName": "Marketing OG",
-  "businessUnit": "Marketing"
+  "businessUnit": "Marketing",
+  "Roles": [...],
+  "Geos": [...],
+  "process": [...]
 }
 ```
 
@@ -208,12 +265,14 @@ Represents a user role.
 
 **Properties:**
 - `RoleName` (string): Name of the role
+- `RoleTagUuid` (string): UUID of the role tag
 - `Display` (string): Computed property for UI binding (returns RoleName)
 
 **JSON Example:**
 ```json
 {
-  "roleName": "Manager"
+  "roleName": "Manager",
+  "roleUuid": "role-uuid-12345"
 }
 ```
 
@@ -225,12 +284,33 @@ Represents a geographic location.
 
 **Properties:**
 - `GeoName` (string): Name of the geography
+- `GeoTagUuid` (string): UUID of the geography tag
 - `Display` (string): Computed property for UI binding (returns GeoName)
 
 **JSON Example:**
 ```json
 {
-  "geoName": "North America"
+  "geoName": "North America",
+  "geoUuid": "geo-uuid-12345"
+}
+```
+
+---
+
+### ProcessItem
+
+Represents a process or workflow.
+
+**Properties:**
+- `ProcessName` (string): Name of the process
+- `ProcessTagUuid` (string): UUID of the process tag
+- `Display` (string): Computed property for UI binding (returns ProcessName)
+
+**JSON Example:**
+```json
+{
+  "processName": "Onboarding",
+  "processUuid": "process-uuid-12345"
 }
 ```
 
@@ -238,21 +318,33 @@ Represents a geographic location.
 
 ## Configuration Classes
 
-### Settings (in MainWindow.axaml.cs)
+### Settings
 
-Application settings loaded from `appsettings.json`.
+Application settings loaded from `appsettings.json` under the `Settings` section.
 
 **Properties:**
-- `jsonURL` (string): URL to download inputs.json from
-- `Fullscreen` (bool): Enable full-screen mode
+- `jsonURL` (string): URL to download inputs.json from (empty for local file)
+- `Fullscreen` (bool): Enable full-screen mode for kiosk scenarios
 - `AllowExit` (bool): Allow user to close the application
 - `RegKeyPath` (string): Full registry path (e.g., "HKEY_LOCAL_MACHINE\\SOFTWARE\\CUSTOMER")
 
+**JSON Example:**
+```json
+{
+  "Settings": {
+    "jsonURL": "https://example.com/inputs.json",
+    "Fullscreen": true,
+    "AllowExit": false,
+    "RegKeyPath": "HKEY_LOCAL_MACHINE\\SOFTWARE\\CUSTOMER"
+  }
+}
+```
+
 ---
 
-### UI (in MainView.axaml.cs)
+### UI
 
-UI text configuration loaded from `appsettings.json`.
+UI text configuration loaded from `appsettings.json` under the `UI` section.
 
 **Properties:**
 - `Headline` (string): Main heading text
@@ -262,6 +354,20 @@ UI text configuration loaded from `appsettings.json`.
 - `ErrorSubtitle` (string): Error subtitle
 - `ErrorInformation` (string): Error message details
 
+**JSON Example:**
+```json
+{
+  "UI": {
+    "Headline": "Device Configuration",
+    "Subtitle": "Select your Business Unit, Role, and Geography",
+    "Information": "Placing your device in the correct Business Unit...",
+    "ErrorHeadline": "Uh oh!",
+    "ErrorSubtitle": "We've encountered an error",
+    "ErrorInformation": "An error occurred during configuration..."
+  }
+}
+```
+
 ---
 
 ## Events and Lifecycle
@@ -269,39 +375,50 @@ UI text configuration loaded from `appsettings.json`.
 ### Application Startup
 
 1. `Program.Main()` called
-2. Avalonia app builder configured
-3. `App.Initialize()` called
+2. Avalonia app builder configured with OGSelector as the app
+3. `.Startup` event triggers, then `.FrameworkInitializationCompleted`
 4. `App.OnFrameworkInitializationCompleted()` creates MainWindow
 5. `MainWindow` constructor:
    - Creates MainViewModel
-   - Configures window state (fullscreen, exit prevention)
+   - Loads configuration via ConfigurationService
+   - Configures window properties (fullscreen, exit prevention)
    - Calls `InitializeAsync()`
 6. `InitializeAsync()`:
-   - Checks for command-line arguments
-   - Loads jsonURL from settings if no argument
-   - Calls `viewModel.LoadDataAsync()`
+   - Checks for command-line arguments containing JSON URL
+   - Falls back to `jsonURL` from appsettings.json
+   - Calls `viewModel.LoadDataAsync(url)`
+7. MainViewModel begins loading and populating UI collections
 
 ### Data Loading
 
-1. `LoadDataAsync()` called
+1. User provides URL via argument or configuration, or local file is used
 2. `JsonDownloadService.LoadFromFileOrUrlAsync()` invoked
 3. If URL provided:
-   - Download JSON
-   - Save to local `inputs.json`
-4. Read local `inputs.json`
-5. Deserialize to InputsData
-6. Populate ViewModel collections
-7. UI updates via data binding
+   - Validates URL format
+   - Downloads JSON from URL
+   - Saves to local `inputs.json` for caching
+4. Reads local `inputs.json`
+5. Deserializes JSON to InputsData object
+6. Populates BusinessUnits collection
+7. Sets availability flags for Process/Role/Geo based on data
+8. UI updates automatically via data binding
 
 ### User Submission
 
-1. User selects all three dropdowns
-2. User clicks Submit button
-3. `SubmitCommand` executed
-4. Validation performed
-5. If valid:
-   - `RegistryService.SetRegistryKey()` called for each value
-   - Application exits (if AllowExit is true)
-6. If invalid:
-   - StatusMessage updated
-   - User notified to complete selections
+1. User selects Business Unit (required)
+2. User selects Process (if available)
+3. User selects Role (if available)
+4. User selects Geography (if available)
+5. User clicks Submit button
+6. `SubmitCommand` executed
+7. Validation performed:
+   - All required fields checked
+   - StatusMessage set if validation fails
+8. If valid:
+   - Registry service deletes previous registry path
+   - Registry keys written for each selected item
+   - Status message confirms success
+   - Application closes (if AllowExit is true)
+9. If invalid:
+   - StatusMessage updated with validation error
+   - Application remains open for user correction

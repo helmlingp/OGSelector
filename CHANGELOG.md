@@ -7,13 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-03-02
+
 ### Added
-- Comprehensive project documentation
-  - README.md with full project overview
-  - API_DOCUMENTATION.md with technical API details
-  - DEPLOYMENT.md with deployment strategies
-  - CONTRIBUTING.md with contribution guidelines
-  - CHANGELOG.md for tracking changes
+- **Process Selection**: New Process dropdown for additional organizational structure
+  - ProcessItem model with processName and processUuid fields
+  - Process selection in submission flow
+  - Registry keys for process storage (Process, ProcessTagUuid)
+- **Enhanced Data Structure**: Nested Role, Geo, and Process items within each Business Unit
+  - Each Business Unit now contains its own Roles, Geos, and Process lists
+  - UUIDs for all items (Roles, Geos, Processes) for tag-based identification
+- **ConfigurationService**: New service for centralized configuration management
+  - Loads appsettings.json from current or application directory
+  - Auto-exports configuration to current directory
+  - Environment variable override support
+- **Updated Registry Keys**: New registry structure matching UEM requirements
+  - OGUuid, OGid, OGName for organizational group identification
+  - BUName for business unit display name
+  - RolesTagUuid, GeosTagUuid, ProcessTagUuid for tag-based identification
+  - Delete existing registry keys on Submit, prior to writing new values
+- **Install & Uninstall scripts**: Provide install and uninstall powershell scripts
+- **Block Windows Key**: Block Windows key to prevent minimise of the app
+- **Versioning**: Add versioning
+
+### Changed
+- **Data Model Structure**: Roles, Geos, and Process are now nested under BusinessUnit
+  - Old flat structure replaced with hierarchical organization
+  - Each BU has independent role/geo/process options
+- **Registry Output**: Expanded from 6 to 10 registry keys
+  - Added Process-related keys
+  - Renamed some keys for clarity (Role → Roles, Geography → Geos, etc.)
+  - Added UUID fields for all selections
+- **MainViewModel**: Enhanced to handle optional Process/Role/Geo selections
+  - Added HasProcess, HasRoles, HasGeos flags
+  - Dynamic visibility based on available data
+  - Improved validation logic for optional selections
+- **Documentation**: Completely updated for new schema
+  - README.md updated with nested data structure
+  - API_DOCUMENTATION.md recreated from scratch
+  - DEPLOYMENT.md updated with new registry keys
+  - Updated JSON schema examples throughout
+
+### Fixed
+- Registry key cleanup now properly deletes entire path tree
+- Improved error handling in configuration loading
+- Better validation for optional selection fields
+
+### Technical Details
+- ProcessItem class added to Models
+- RegistryService.DeleteRegistryKeyPath() method updated
+- MainViewModel selection and validation logic enhanced
+- All documentation synchronized with implementation
 
 ## [1.0.0] - 2026-01-22
 
@@ -146,5 +190,6 @@ This is the first stable release of OGSelector, a tool designed to help organiza
 
 ---
 
-[Unreleased]: https://github.com/helmlingp/OGSelector/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/helmlingp/OGSelector/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/helmlingp/OGSelector/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/helmlingp/OGSelector/releases/tag/v1.0.0

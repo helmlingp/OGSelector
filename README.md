@@ -71,7 +71,7 @@ The application is configured via `appsettings.json`:
   },
   "Settings": {
     "jsonURL": "",
-    "Fullscreen": false,
+    "Fullscreen": true,
     "AllowExit": false,
     "RegKeyPath": "HKEY_LOCAL_MACHINE\\SOFTWARE\\CUSTOMER"
   }
@@ -81,8 +81,8 @@ The application is configured via `appsettings.json`:
 **Configuration Options:**
 
 - **UI Section**: Customizable text for all user-facing messages
-- **jsonURL**: Optional URL to download `inputs.json` from a remote location
-- **Fullscreen**: Set to `true` for kiosk mode
+- **jsonURL**: Optional URL to download `inputs.json` from a remote location (or leave blank for local file)
+- **Fullscreen**: Set to `true` for kiosk / lockdown mode
 - **AllowExit**: Set to `false` to prevent users from closing the application
 - **RegKeyPath**: Registry path where selections will be stored
 
@@ -91,69 +91,71 @@ The application is configured via `appsettings.json`:
 The application requires an `inputs.json` file that defines available Business Units, Roles, and Geographies:
 
 ```json
-{
   "BUs": [
     {
-      "uemUuid": "uuid-12345",
+      "uemUuid": "uuid-value-here",
       "uemId": "1001",
-      "uemName": "Marketing OG",
-      "businessUnit": "Marketing"
-    }
-  ],
-  "Roles": [
-    {
-      "roleName": "Manager"
-    },
-    {
-      "roleName": "Employee"
-    }
-  ],
-  "Geos": [
-    {
-      "geoName": "North America"
-    },
-    {
-      "geoName": "Europe"
+      "uemName": "OG Name in UEM",
+      "businessUnit": "Display Name for Users",
+      "Roles": [
+        {"roleName": "Executive", "roleUuid": "role-uuid-1"},
+        {"roleName": "Manager", "roleUuid": "role-uuid-2"},
+        {"roleName": "Employee", "roleUuid": "role-uuid-3"},
+        {"roleName": "Contractor", "roleUuid": "role-uuid-4"}
+      ],
+      "Geos": [
+        {"geoName": "North America", "geoUuid": "geo-uuid-1"},
+        {"geoName": "Europe", "geoUuid": "geo-uuid-2"},
+        {"geoName": "Asia Pacific", "geoUuid": "geo-uuid-3"},
+        {"geoName": "Latin America", "geoUuid": "geo-uuid-4"}
+      ],
+      "process": [
+        {"processName": "Process 1", "processUuid": "process-uuid-1"},
+        {"processName": "Process 2", "processUuid": "process-uuid-2"}
+      ]
     }
   ]
 }
 ```
 
 **Data Structure:**
-- **BUs**: List of Business Units with UEM metadata
+- **BUs**: List of Business Units with UEM metadata and nested options
   - `uemUuid`: Unique identifier for the organizational group
   - `uemId`: Numeric ID for the organizational group
   - `uemName`: Display name in UEM system
   - `businessUnit`: User-facing name shown in the UI
-- **Roles**: List of available role names
-- **Geos**: List of geographic locations
+  - **Roles**: List of available roles for this BU
+    - `roleName`: Display name for the role
+    - `roleUuid`: Unique identifier for the role
+  - **Geos**: List of geographic locations for this BU
+    - `geoName`: Display name for the geography
+    - `geoUuid`: Unique identifier for the geography
+  - **process**: List of processes for this BU
+    - `processName`: Display name for the process
+    - `processUuid`: Unique identifier for the process
 
 ## Usage
 
 ### Running the Application
 
 1. **Standard mode:**
-   ```
-   OGSelector.exe
-   ```
+  - Place `inputs.json` and `appsettings.json` in the same directory as `OGSelector.exe`
+  - Run `OGSelector.exe`
 
 2. **With remote JSON URL:**
    ```
    OGSelector.exe "https://example.com/inputs.json"
    ```
 
-3. **With local inputs.json:**
-   - Place `inputs.json` in the same directory as `OGSelector.exe`
-   - Run `OGSelector.exe`
-
 ### User Workflow
 
 1. Application launches and displays the main interface
 2. User selects their Business Unit from the dropdown
-3. User selects their Role from the dropdown
-4. User selects their Geography from the dropdown
-5. User clicks the "Submit" button
-6. Selected values are written to Windows Registry
+3. User selects their Process from the dropdown
+4. User selects their Role from the dropdown
+5. User selects their Geography from the dropdown
+6. User clicks the "Submit" button
+7. Selected values are written to Windows Registry
 
 ### Registry Output
 
@@ -162,12 +164,16 @@ After submission, the following registry keys are created:
 **Location:** `HKEY_LOCAL_MACHINE\SOFTWARE\CUSTOMER` (or as configured)
 
 **Keys:**
-- `Role`: Selected role name
-- `Geography`: Selected geography name
 - `uemUuid`: UUID of the selected organizational group
 - `uemId`: ID of the selected organizational group
 - `uemName`: Name of the organizational group in UEM
 - `BusinessUnit`: Selected business unit name
+- `roleName`: Selected role name
+- `roleUuid`: UUID of the Tag matching the selected role
+- `geoName`: Selected georgaphy name
+- `geoUuid`: UUID of the Tag matching the selected geography
+- `processName`: Selected process name
+- `processUuid`: UUID of the Tag matching the selected process
 
 ## Building the Application
 
@@ -226,22 +232,28 @@ The application follows the **MVVM (Model-View-ViewModel)** pattern:
 - **Views** (`.axaml` files): Define the UI layout and appearance
 - **ViewModels** (`MainViewModel.cs`): Handle business logic and data binding
 - **Services**: 
+  - `ConfigurationService.cs`: Manages building application configuration based on `appsettings.json`
   - `JsonDownloadService`: Manages data loading from files or URLs
   - `RegistryService`: Handles Windows Registry operations
 
 ### Key Components
 
-1. **JsonDownloadService**
+1. **ConfigurationService**
+   - Loads application settings from `appsettings.json` using Microsoft.Extensions.Configuration
+   - Searches for configuration files in current directory first, then falls back to application directory
+   - Exports `appsettings.json` from app directory to current directory if not found locally
+
+2. **JsonDownloadService**
    - Validates and downloads JSON from URLs
    - Falls back to local `inputs.json` if URL fails
    - Deserializes JSON into data models
 
-2. **RegistryService**
+3. **RegistryService**
    - Reads/writes to Windows Registry (64-bit view)
    - Uses configured registry path from settings
    - Handles errors gracefully
 
-3. **MainViewModel**
+4. **MainViewModel**
    - Manages observable collections for UI binding
    - Handles user selection state
    - Coordinates data loading and submission
