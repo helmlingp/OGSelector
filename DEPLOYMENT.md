@@ -62,8 +62,8 @@ Create a deployment folder with these files:
 ```
 OGSelector/
 ├── OGSelector.exe          # Main executable
-├── appsettings.json        # Configuration file
-├── inputs.json             # Data file (if not using remote URL)
+├── appsettings.json        # Configuration file. Use the appsettings.json.template as a starting point
+├── inputs.json             # Data file (if not using remote URL). Use the inputs.json.template as a starting point
 └── logo.png                # Optional: Company logo
 ```
 

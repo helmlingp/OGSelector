@@ -2,7 +2,7 @@
   "UI": {
     "Headline": "Device configuration",
     "Subtitle": "Select your Business Unit, Role, and Geography",
-    "Information": "Please ensure you have authenticated to ZScaler.",
+    "Information": "Placing your device in the correct Business Unit helps us configure it properly.",
     "ErrorHeadline": "Uh oh!",
     "ErrorSubtitle": "We've encountered an error",
     "ErrorInformation": "An error occurred during the configuration process for this device. \n\nPlease contact your IT Support."
