@@ -8,6 +8,9 @@ public class InputsData
 {
     [JsonPropertyName("BUs")]
     public List<BusinessUnit> BusinessUnits { get; set; } = new();
+
+    [JsonPropertyName("NetScopeSmartgroups")]
+    public List<string> NetScopeSmartgroups { get; set; } = new();
 }
 
 public class BusinessUnit
@@ -30,7 +33,7 @@ public class BusinessUnit
     [JsonPropertyName("Roles")]
     public List<RoleItem> Roles { get; init; } = new();
 
-    [JsonPropertyName("process")]
+    [JsonPropertyName("Process")]
     public List<ProcessItem> Process { get; init; } = new();
 
     // Display property for UI binding

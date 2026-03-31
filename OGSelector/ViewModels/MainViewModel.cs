@@ -17,6 +17,7 @@ public partial class MainViewModel : ObservableObject
 {
     private readonly JsonDownloadService _jsonDownloadService;
     private readonly RegistryService _registryService;
+    private InputsData _inputsData = new();
 
     [ObservableProperty]
     private ObservableCollection<BusinessUnit> businessUnits = new();
@@ -80,6 +81,7 @@ public partial class MainViewModel : ObservableObject
 
             if (inputsData != null)
             {
+                _inputsData = inputsData;
                 BusinessUnits = new ObservableCollection<BusinessUnit>(inputsData.BusinessUnits);
 
                 SelectedBusinessUnit = BusinessUnits.FirstOrDefault();
@@ -119,12 +121,6 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        if (HasProcess && SelectedProcess == null)
-        {
-            StatusMessage = "Please select a Process";
-            return;
-        }
-
         if (HasRoles && SelectedRole == null)
         {
             StatusMessage = "Please select a Role";
@@ -147,6 +143,17 @@ public partial class MainViewModel : ObservableObject
             _registryService.SetRegistryKey("OGid", SelectedBusinessUnit.UemId);
             _registryService.SetRegistryKey("OGName", SelectedBusinessUnit.UemName);
             _registryService.SetRegistryKey("BUName", SelectedBusinessUnit.BusinessUnitName);
+
+            if (SelectedGeo != null)
+            {
+                _registryService.SetRegistryKey("Geos", SelectedGeo.GeoName);
+                _registryService.SetRegistryKey("GeosTagUuid", SelectedGeo.GeoTagUuid);
+            } else
+            {
+                _registryService.SetRegistryKey("Geos", string.Empty);
+                _registryService.SetRegistryKey("GeosTagUuid", string.Empty);
+            }
+
             if (SelectedProcess != null)
             {
                 _registryService.SetRegistryKey("Process", SelectedProcess.ProcessName);
@@ -157,6 +164,7 @@ public partial class MainViewModel : ObservableObject
                 _registryService.SetRegistryKey("Process", string.Empty);
                 _registryService.SetRegistryKey("ProcessTagUuid", string.Empty);
             }
+
             if (SelectedRole != null)
             {
                 _registryService.SetRegistryKey("Roles", SelectedRole.RoleName);
@@ -166,16 +174,27 @@ public partial class MainViewModel : ObservableObject
                 _registryService.SetRegistryKey("Roles", string.Empty);
                 _registryService.SetRegistryKey("RolesTagUuid", string.Empty);
             }
-            if (SelectedGeo != null)
-            {
-                _registryService.SetRegistryKey("Geos", SelectedGeo.GeoName);
-                _registryService.SetRegistryKey("GeosTagUuid", SelectedGeo.GeoTagUuid);
-            } else
-            {
-                _registryService.SetRegistryKey("Geos", string.Empty);
-                _registryService.SetRegistryKey("GeosTagUuid", string.Empty);
-            }
+
+            // Build combined role with "-" separator for non-empty values used by ibexbusiness sensor that drives old Intelligence Automations.
+            var parts = new List<string> { SelectedBusinessUnit.UemName };
+            if (!string.IsNullOrEmpty(SelectedGeo?.GeoName))
+                parts.Add(SelectedGeo.GeoName);
+            if (!string.IsNullOrEmpty(SelectedProcess?.ProcessName))
+                parts.Add(SelectedProcess.ProcessName);
+            if (!string.IsNullOrEmpty(SelectedRole?.RoleName))
+                parts.Add(SelectedRole.RoleName);
+            var role = string.Join("-", parts).Replace("CIS-", ""); // Remove spaces for cleaner registry value
+            _registryService.SetRegistryKey("role", role);
+
+            // write Proxy registry key based on NetScopeSmartgroups
+            var sgrole = string.Join("", parts).Replace("CIS-", "");
+            var proxyValue = _inputsData.NetScopeSmartgroups.Any(sg =>
+                sg.EndsWith(sgrole, StringComparison.OrdinalIgnoreCase)) ? "NetSkope" : "ZScaler";
+            _registryService.SetRegistryKey("Proxy", proxyValue);
+
+
             StatusMessage = "Selections saved to registry successfully";
+            
             
             // Close the application after successful submission
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
