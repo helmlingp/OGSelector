@@ -91,29 +91,41 @@ The application is configured via `appsettings.json`:
 The application requires an `inputs.json` file that defines available Business Units, Roles, and Geographies:
 
 ```json
+{
   "BUs": [
     {
       "uemUuid": "uuid-value-here",
       "uemId": "1001",
       "uemName": "OG Name in UEM",
       "businessUnit": "Display Name for Users",
-      "Roles": [
-        {"roleName": "Executive", "roleUuid": "role-uuid-1"},
-        {"roleName": "Manager", "roleUuid": "role-uuid-2"},
-        {"roleName": "Employee", "roleUuid": "role-uuid-3"},
-        {"roleName": "Contractor", "roleUuid": "role-uuid-4"}
-      ],
       "Geos": [
+        {"geoName": "", "geoUuid": ""},
         {"geoName": "North America", "geoUuid": "geo-uuid-1"},
-        {"geoName": "Europe", "geoUuid": "geo-uuid-2"},
-        {"geoName": "Asia Pacific", "geoUuid": "geo-uuid-3"},
-        {"geoName": "Latin America", "geoUuid": "geo-uuid-4"}
+        {"geoName": "Europe", "geoUuid": "geo-uuid-2"}
       ],
-      "process": [
+      "Roles": [
+        {"roleName": "", "roleUuid": ""},
+        {"roleName": "Manager", "roleUuid": "role-uuid-1"},
+        {"roleName": "Employee", "roleUuid": "role-uuid-2"}
+      ],
+      "Process": [
+        {"processName": "", "processUuid": ""},
         {"processName": "Process 1", "processUuid": "process-uuid-1"},
         {"processName": "Process 2", "processUuid": "process-uuid-2"}
       ]
+    },
+    {
+      "uemUuid": "",
+      "uemId": "",
+      "uemName": "",
+      "businessUnit": null,
+      "Geos": [],
+      "Roles": [],
+      "Process": []
     }
+  ],
+  "NetScopeSmartgroups": [
+    "OG Name in UEMNorth AmericaProcess 1Manager"
   ]
 }
 ```
@@ -122,17 +134,18 @@ The application requires an `inputs.json` file that defines available Business U
 - **BUs**: List of Business Units with UEM metadata and nested options
   - `uemUuid`: Unique identifier for the organizational group
   - `uemId`: Numeric ID for the organizational group
-  - `uemName`: Display name in UEM system
+  - `uemName`: Name in UEM system
   - `businessUnit`: User-facing name shown in the UI
-  - **Roles**: List of available roles for this BU
-    - `roleName`: Display name for the role
-    - `roleUuid`: Unique identifier for the role
-  - **Geos**: List of geographic locations for this BU
+  - **Geos**: List of geographic locations for this BU (include a blank entry `""` to allow no-geo selection)
     - `geoName`: Display name for the geography
-    - `geoUuid`: Unique identifier for the geography
-  - **process**: List of processes for this BU
+    - `geoUuid`: Unique identifier for the geography tag
+  - **Roles**: List of available roles for this BU (include a blank entry `""` to allow no-role selection)
+    - `roleName`: Display name for the role
+    - `roleUuid`: Unique identifier for the role tag
+  - **Process**: List of processes for this BU (include a blank entry `""` to allow no-process selection)
     - `processName`: Display name for the process
-    - `processUuid`: Unique identifier for the process
+    - `processUuid`: Unique identifier for the process tag
+- **NetScopeSmartgroups**: List of smartgroup name strings that should use NetSkope proxy; all others default to ZScaler
 
 ## Usage
 
@@ -164,16 +177,18 @@ After submission, the following registry keys are created:
 **Location:** `HKEY_LOCAL_MACHINE\SOFTWARE\CUSTOMER` (or as configured)
 
 **Keys:**
-- `uemUuid`: UUID of the selected organizational group
-- `uemId`: ID of the selected organizational group
-- `uemName`: Name of the organizational group in UEM
-- `BusinessUnit`: Selected business unit name
-- `roleName`: Selected role name
-- `roleUuid`: UUID of the Tag matching the selected role
-- `geoName`: Selected georgaphy name
-- `geoUuid`: UUID of the Tag matching the selected geography
-- `processName`: Selected process name
-- `processUuid`: UUID of the Tag matching the selected process
+- `OGUuid`: UUID of the selected organizational group
+- `OGid`: ID of the selected organizational group
+- `OGName`: Name of the organizational group in UEM
+- `BUName`: Display name of the selected business unit
+- `Geos`: Selected geography name (empty if not applicable)
+- `GeosTagUuid`: UUID of the tag matching the selected geography
+- `Roles`: Selected role name (empty if not applicable)
+- `RolesTagUuid`: UUID of the tag matching the selected role
+- `Process`: Selected process name (empty if not applicable)
+- `ProcessTagUuid`: UUID of the tag matching the selected process
+- `role`: Combined string of non-empty selections joined with `-` (e.g. `OG Name in UEM-North America-Process 1-Manager`)
+- `Proxy`: `NetSkope` if `role` matches a `NetScopeSmartgroups` entry, otherwise `ZScaler`
 
 ## Building the Application
 

@@ -187,22 +187,24 @@ Validates selections and writes them to the registry.
 
 **Validation:**
 - Ensures Business Unit is selected (required)
-- Ensures Process is selected if processes are available
-- Ensures Role is selected if roles are available
-- Ensures Geography is selected if geographies are available
+- Ensures Role is selected if roles are available (required if list is non-empty)
+- Ensures Geography is selected if geographies are available (required if list is non-empty)
+- Process selection is always optional
 - Sets `StatusMessage` if validation fails
 
 **Registry Keys Written:**
 - `OGUuid`: UUID from selected business unit
 - `OGid`: ID from selected business unit
-- `OGName`: Name from selected business unit
+- `OGName`: UEM name of selected business unit
 - `BUName`: Display name of selected business unit
-- `Process`: Selected process name (empty if N/A)
-- `ProcessTagUuid`: UUID of selected process (empty if N/A)
-- `Roles`: Selected role name (empty if N/A)
-- `RolesTagUuid`: UUID of selected role (empty if N/A)
 - `Geos`: Selected geography name (empty if N/A)
-- `GeosTagUuid`: UUID of selected geography (empty if N/A)
+- `GeosTagUuid`: UUID of selected geography tag (empty if N/A)
+- `Roles`: Selected role name (empty if N/A)
+- `RolesTagUuid`: UUID of selected role tag (empty if N/A)
+- `Process`: Selected process name (empty if N/A)
+- `ProcessTagUuid`: UUID of selected process tag (empty if N/A)
+- `role`: Non-empty selections joined with `-` (e.g. `OG Name in UEM-North America-Process 1-Manager`)
+- `Proxy`: `NetSkope` if `role` suffix matches a `NetScopeSmartgroups` entry, otherwise `ZScaler`
 
 **Example:**
 ```csharp
@@ -220,11 +222,15 @@ Root container for all configuration data.
 
 **Properties:**
 - `BusinessUnits` (`List<BusinessUnit>`): List of business units
+- `NetScopeSmartgroups` (`List<string>`): Smartgroup names that should use NetSkope proxy; all others use ZScaler
 
 **JSON Mapping:**
 ```json
 {
-  "BUs": [...]
+  "BUs": [...],
+  "NetScopeSmartgroups": [
+    "OG Name in UEMNorth AmericaProcess 1Manager"
+  ]
 }
 ```
 
@@ -247,13 +253,22 @@ Represents an organizational group/business unit with associated options.
 **JSON Example:**
 ```json
 {
-  "uemUuid": "a1b2c3d4-e5f6-7890",
+  "uemUuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "uemId": "1001",
-  "uemName": "Marketing OG",
-  "businessUnit": "Marketing",
-  "Roles": [...],
-  "Geos": [...],
-  "process": [...]
+  "uemName": "OG Name in UEM",
+  "businessUnit": "Display Name for Users",
+  "Geos": [
+    { "geoName": "", "geoUuid": "" },
+    { "geoName": "North America", "geoUuid": "geo-uuid-1" }
+  ],
+  "Roles": [
+    { "roleName": "", "roleUuid": "" },
+    { "roleName": "Manager", "roleUuid": "role-uuid-1" }
+  ],
+  "Process": [
+    { "processName": "", "processUuid": "" },
+    { "processName": "Process 1", "processUuid": "process-uuid-1" }
+  ]
 }
 ```
 

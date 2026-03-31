@@ -5,12 +5,46 @@
       "uemId": "1001",
       "uemName": "Marketing Department OG",
       "businessUnit": "Marketing",
-      "process": [
+      "Geos": [
         {
-          "processName": "Campaign Management"
+          "geoName": "",
+          "geoUuid": ""
         },
         {
-          "processName": "Brand Operations"
+          "geoName": "North America",
+          "geoUuid": "geo-uuid-1"
+        },
+        {
+          "geoName": "Europe",
+          "geoUuid": "geo-uuid-2"
+        }
+      ],
+      "Roles": [
+        {
+          "roleName": "",
+          "roleUuid": ""
+        },
+        {
+          "roleName": "Manager",
+          "roleUuid": "role-uuid-1"
+        },
+        {
+          "roleName": "Employee",
+          "roleUuid": "role-uuid-2"
+        }
+      ],
+      "Process": [
+        {
+          "processName": "",
+          "processUuid": ""
+        },
+        {
+          "processName": "Campaign Management",
+          "processUuid": "process-uuid-1"
+        },
+        {
+          "processName": "Brand Operations",
+          "processUuid": "process-uuid-2"
         }
       ]
     },
@@ -18,92 +52,55 @@
       "uemUuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
       "uemId": "1002",
       "uemName": "Sales Department OG",
-      "businessUnit": "Sales"
+      "businessUnit": "Sales",
+      "Geos": [
+        {
+          "geoName": "North America",
+          "geoUuid": "geo-uuid-1"
+        }
+      ],
+      "Roles": [
+        {
+          "roleName": "Senior Manager",
+          "roleUuid": "role-uuid-3"
+        },
+        {
+          "roleName": "Employee",
+          "roleUuid": "role-uuid-2"
+        }
+      ],
+      "Process": []
     },
     {
       "uemUuid": "c3d4e5f6-a7b8-9012-cdef-123456789012",
       "uemId": "1003",
       "uemName": "Engineering Department OG",
-      "businessUnit": "Engineering"
+      "businessUnit": "Engineering",
+      "Geos": [],
+      "Roles": [
+        {
+          "roleName": "Contractor",
+          "roleUuid": "role-uuid-4"
+        },
+        {
+          "roleName": "Consultant",
+          "roleUuid": "role-uuid-5"
+        }
+      ],
+      "Process": []
     },
     {
-      "uemUuid": "d4e5f6a7-b8c9-0123-def1-234567890123",
-      "uemId": "1004",
-      "uemName": "Human Resources OG",
-      "businessUnit": "Human Resources"
-    },
-    {
-      "uemUuid": "e5f6a7b8-c9d0-1234-ef12-345678901234",
-      "uemId": "1005",
-      "uemName": "Finance Department OG",
-      "businessUnit": "Finance"
-    },
-    {
-      "uemUuid": "f6a7b8c9-d0e1-2345-f123-456789012345",
-      "uemId": "1006",
-      "uemName": "IT Department OG",
-      "businessUnit": "Information Technology"
-    },
-    {
-      "uemUuid": "a7b8c9d0-e1f2-3456-1234-567890123456",
-      "uemId": "1007",
-      "uemName": "Operations Department OG",
-      "businessUnit": "Operations"
-    },
-    {
-      "uemUuid": "b8c9d0e1-f2a3-4567-2345-678901234567",
-      "uemId": "1008",
-      "uemName": "Customer Support OG",
-      "businessUnit": "Customer Support"
+      "uemUuid": "",
+      "uemId": "",
+      "uemName": "",
+      "businessUnit": null,
+      "Geos": [],
+      "Roles": [],
+      "Process": []
     }
   ],
-  "Roles": [
-    {
-      "roleName": "Executive"
-    },
-    {
-      "roleName": "Senior Manager"
-    },
-    {
-      "roleName": "Manager"
-    },
-    {
-      "roleName": "Team Lead"
-    },
-    {
-      "roleName": "Senior Employee"
-    },
-    {
-      "roleName": "Employee"
-    },
-    {
-      "roleName": "Intern"
-    },
-    {
-      "roleName": "Contractor"
-    },
-    {
-      "roleName": "Consultant"
-    }
-  ],
-  "Geos": [
-    {
-      "geoName": "North America"
-    },
-    {
-      "geoName": "South America"
-    },
-    {
-      "geoName": "Europe"
-    },
-    {
-      "geoName": "Asia Pacific"
-    },
-    {
-      "geoName": "Middle East"
-    },
-    {
-      "geoName": "Africa"
-    }
+  "NetScopeSmartgroups": [
+    "Marketing Department OGNorth AmericaCampaign ManagementManager",
+    "Sales Department OGNorth AmericaSenior Manager"
   ]
 }

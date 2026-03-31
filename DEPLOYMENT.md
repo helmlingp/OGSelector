@@ -116,23 +116,34 @@ Create or download your `inputs.json` file:
       "uemId": "1001",
       "uemName": "OG Name in UEM",
       "businessUnit": "Display Name for Users",
-      "Roles": [
-        {"roleName": "Executive", "roleUuid": "role-uuid-1"},
-        {"roleName": "Manager", "roleUuid": "role-uuid-2"},
-        {"roleName": "Employee", "roleUuid": "role-uuid-3"},
-        {"roleName": "Contractor", "roleUuid": "role-uuid-4"}
-      ],
       "Geos": [
+        {"geoName": "", "geoUuid": ""},
         {"geoName": "North America", "geoUuid": "geo-uuid-1"},
-        {"geoName": "Europe", "geoUuid": "geo-uuid-2"},
-        {"geoName": "Asia Pacific", "geoUuid": "geo-uuid-3"},
-        {"geoName": "Latin America", "geoUuid": "geo-uuid-4"}
+        {"geoName": "Europe", "geoUuid": "geo-uuid-2"}
       ],
-      "process": [
+      "Roles": [
+        {"roleName": "", "roleUuid": ""},
+        {"roleName": "Manager", "roleUuid": "role-uuid-1"},
+        {"roleName": "Employee", "roleUuid": "role-uuid-2"}
+      ],
+      "Process": [
+        {"processName": "", "processUuid": ""},
         {"processName": "Process 1", "processUuid": "process-uuid-1"},
         {"processName": "Process 2", "processUuid": "process-uuid-2"}
       ]
+    },
+    {
+      "uemUuid": "",
+      "uemId": "",
+      "uemName": "",
+      "businessUnit": null,
+      "Geos": [],
+      "Roles": [],
+      "Process": []
     }
+  ],
+  "NetScopeSmartgroups": [
+    "OG Name in UEMNorth AmericaProcess 1Manager"
   ]
 }
 ```
@@ -230,12 +241,14 @@ Expected keys:
 - `OGid`: UEM ID from selected Business Unit
 - `OGName`: UEM Name from selected Business Unit
 - `BUName`: Display name of selected Business Unit
-- `Roles`: Selected Role name (empty if no role available)
-- `RolesTagUuid`: UUID of selected Role (empty if no role)
-- `Geos`: Selected Geography name (empty if no geo available)
-- `GeosTagUuid`: UUID of selected Geography (empty if no geo)
-- `Process`: Selected Process name (empty if no process available)
-- `ProcessTagUuid`: UUID of selected Process (empty if no process)
+- `Geos`: Selected Geography name (empty if not applicable)
+- `GeosTagUuid`: UUID of selected Geography tag (empty if not applicable)
+- `Roles`: Selected Role name (empty if not applicable)
+- `RolesTagUuid`: UUID of selected Role tag (empty if not applicable)
+- `Process`: Selected Process name (empty if not applicable)
+- `ProcessTagUuid`: UUID of selected Process tag (empty if not applicable)
+- `role`: Combined string of non-empty selections joined with `-`
+- `Proxy`: `NetSkope` or `ZScaler` based on `NetScopeSmartgroups` match
 
 ### 3. Test Remote Loading (if applicable)
 
@@ -361,7 +374,7 @@ If issues occur:
    - Remove Registry Entries
 
    ```powershell
-   Remove-ItemProperty -Path "HKLM:\SOFTWARE\CUSTOMER" -Name "OGUuid","OGid","OGName","BUName","Roles","RolesTagUuid","Geos","GeosTagUuid","Process","ProcessTagUuid" -Force -ErrorAction SilentlyContinue
+   Remove-ItemProperty -Path "HKLM:\SOFTWARE\CUSTOMER" -Name "OGUuid","OGid","OGName","BUName","Geos","GeosTagUuid","Roles","RolesTagUuid","Process","ProcessTagUuid","role","Proxy" -Force -ErrorAction SilentlyContinue
    ```
 
 ## Support and Monitoring
