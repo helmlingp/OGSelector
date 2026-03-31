@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.6] - 2026-04-01
+
+### Added
+- **Proxy Detection**: New `Proxy` registry key written on submission
+  - Value is `NetSkope` if the combined role string matches any entry in `NetScopeSmartgroups`
+  - Value is `ZScaler` for all other selections
+- **NetScopeSmartgroups**: New top-level array in `inputs.json` listing smartgroup names that use NetSkope proxy
+- **`role` Registry Key**: Combined smartgroup string written as `UemName-GeoName-ProcessName-RoleName` (non-empty parts only, joined with `-`) for backward compatibility with Intelligence Automations
+- **`SmartGroupName` Registry Key**: Full concatenated smartgroup identifier for UEM
+- **Optional Process Selection**: Process selection is now optional for all Business Units — users can submit without selecting a Process
+
+### Changed
+- **Process is no longer mandatory**: Removed the validation requiring Process selection when processes are available
+- **Blank selection support**: Geos, Roles, and Process lists now support blank `""` entries to allow users to make no selection for optional fields
+- **`inputs.json` schema**: `Process` key is now capitalised (was `process`); `Roles`, `Geos`, and `Process` are per-BU nested arrays including `roleUuid`, `geoUuid`, and `processUuid` fields
+- **`NetScopeSmartgroups`**: Added as a top-level array in `inputs.json` (replaces the previous `AllSmartgroups` name)
+- **Documentation**: Updated README, DEPLOYMENT, API_DOCUMENTATION, and inputs.json.template to reflect schema changes and new registry keys
+
+### Fixed
+- **Proxy match logic**: Fixed inverted `Contains` check — now correctly uses `EndsWith` to match smartgroup names against the combined role string
+
+---
+
 ## [1.1.5] - 2026-03-02
 
 ### Added
@@ -190,6 +213,7 @@ This is the first stable release of OGSelector, a tool designed to help organiza
 
 ---
 
-[Unreleased]: https://github.com/helmlingp/OGSelector/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/helmlingp/OGSelector/compare/v1.0.0...v1.1.0
+[Unreleased]: https://github.com/helmlingp/OGSelector/compare/v1.1.6...HEAD
+[1.1.6]: https://github.com/helmlingp/OGSelector/compare/v1.1.5...v1.1.6
+[1.1.5]: https://github.com/helmlingp/OGSelector/compare/v1.0.0...v1.1.5
 [1.0.0]: https://github.com/helmlingp/OGSelector/releases/tag/v1.0.0
