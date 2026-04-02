@@ -9,8 +9,20 @@ public class InputsData
     [JsonPropertyName("BUs")]
     public List<BusinessUnit> BusinessUnits { get; set; } = new();
 
+    [JsonPropertyName("SmartGroupTags")]
+    public List<SmartGroupTags> SmartGroupTags { get; set; } = new();
+
     [JsonPropertyName("NetScopeSmartgroups")]
     public List<string> NetScopeSmartgroups { get; set; } = new();
+}
+
+public class SmartGroupTags
+{
+    [JsonPropertyName("SmartGroupName")]
+    public string SmartGroupName { get; init; } = string.Empty;
+
+    [JsonPropertyName("TagUUID")]
+    public string TagUUID { get; init; } = string.Empty;
 }
 
 public class BusinessUnit

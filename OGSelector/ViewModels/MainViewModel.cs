@@ -192,6 +192,13 @@ public partial class MainViewModel : ObservableObject
                 sg.EndsWith(sgrole, StringComparison.OrdinalIgnoreCase)) ? "NetSkope" : "ZScaler";
             _registryService.SetRegistryKey("Proxy", proxyValue);
 
+            // write SmartGroupTags to registry as JSON string for later use by OGSelectorHelper
+            var matchedSmartGroupTag = _inputsData.SmartGroupTags.FirstOrDefault(sg =>
+                sg.SmartGroupName.EndsWith(sgrole, StringComparison.OrdinalIgnoreCase));
+            var SGValue = matchedSmartGroupTag?.SmartGroupName ?? string.Empty;
+            _registryService.SetRegistryKey("SmartGroupTag", SGValue);
+            var TagValue = matchedSmartGroupTag?.TagUUID ?? string.Empty;
+            _registryService.SetRegistryKey("SmartGroupTagUUID", TagValue);
 
             StatusMessage = "Selections saved to registry successfully";
             

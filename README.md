@@ -124,6 +124,12 @@ The application requires an `inputs.json` file that defines available Business U
       "Process": []
     }
   ],
+  "SmartGroupTags": [
+    {
+      "SmartGroupName": "OG Name in UEMNorth AmericaProcess 1Manager",
+      "TagUUID": "tag-uuid-1"
+    }
+  ],
   "NetScopeSmartgroups": [
     "OG Name in UEMNorth AmericaProcess 1Manager"
   ]
@@ -146,6 +152,9 @@ The application requires an `inputs.json` file that defines available Business U
     - `processName`: Display name for the process
     - `processUuid`: Unique identifier for the process tag
 - **NetScopeSmartgroups**: List of smartgroup name strings that should use NetSkope proxy; all others default to ZScaler
+- **SmartGroupTags**: Lookup list used to map matched smartgroup names to tag UUIDs
+  - `SmartGroupName`: Concatenated smartgroup identifier (`UemName + GeoName + ProcessName + RoleName`, no separators)
+  - `TagUUID`: Tag UUID associated with `SmartGroupName`
 
 ## Usage
 
@@ -189,6 +198,8 @@ After submission, the following registry keys are created:
 - `ProcessTagUuid`: UUID of the tag matching the selected process
 - `role`: Combined string of non-empty selections joined with `-` (e.g. `OG Name in UEM-North America-Process 1-Manager`)
 - `Proxy`: `NetSkope` if `role` matches a `NetScopeSmartgroups` entry, otherwise `ZScaler`
+- `SmartGroupTag`: Matched `SmartGroupName` from `SmartGroupTags` (empty if no match)
+- `SmartGroupTagUUID`: Matched `TagUUID` from `SmartGroupTags` (empty if no match)
 
 ## Building the Application
 

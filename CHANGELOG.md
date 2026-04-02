@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.7] - 2026-04-02
+
+### Added
+- **SmartGroup Tag Registry Keys**:
+  - `SmartGroupTag`: Full concatenated smartgroup identifier matched from `SmartGroupTags`
+  - `SmartGroupTagUUID`: Tag UUID paired with the matched `SmartGroupTag`
+  - Error message when `appsettings.json` or `inputs.json` are not found
+
+### Changed
+- **`inputs.json` schema**: `SmartGroupTags` array added with object that includes a `SmartGroupName` and `SmartGroupTag` values
+- **Documentation**: Updated README, DEPLOYMENT, API_DOCUMENTATION, and inputs.json.template to reflect schema changes and new registry keys
+
 ## [1.1.6] - 2026-04-01
 
 ### Added
@@ -15,7 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Value is `ZScaler` for all other selections
 - **`NetScopeSmartgroups`**: New top-level array in `inputs.json` listing smartgroup names that use NetSkope proxy
 - **`role` Registry Key**: Combined smartgroup string written as `UemName-GeoName-ProcessName-RoleName` (non-empty parts only, joined with `-`) for backward compatibility with Intelligence Automations
-- **`SmartGroupName` Registry Key**: Full concatenated smartgroup identifier for UEM
 - **Optional Process Selection**: Process selection is now optional for all Business Units — users can submit without selecting a Process
 
 ### Changed

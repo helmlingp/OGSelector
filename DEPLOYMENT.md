@@ -142,6 +142,12 @@ Create or download your `inputs.json` file:
       "Process": []
     }
   ],
+  "SmartGroupTags": [
+    {
+      "SmartGroupName": "OG Name in UEMNorth AmericaProcess 1Manager",
+      "TagUUID": "tag-uuid-1"
+    }
+  ],
   "NetScopeSmartgroups": [
     "OG Name in UEMNorth AmericaProcess 1Manager"
   ]
@@ -249,6 +255,8 @@ Expected keys:
 - `ProcessTagUuid`: UUID of selected Process tag (empty if not applicable)
 - `role`: Combined string of non-empty selections joined with `-`
 - `Proxy`: `NetSkope` or `ZScaler` based on `NetScopeSmartgroups` match
+- `SmartGroupTag`: Matched `SmartGroupName` from `SmartGroupTags` (empty if no match)
+- `SmartGroupTagUUID`: Matched `TagUUID` from `SmartGroupTags` (empty if no match)
 
 ### 3. Test Remote Loading (if applicable)
 

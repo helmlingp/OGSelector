@@ -99,6 +99,16 @@
       "Process": []
     }
   ],
+  "SmartGroupTags": [
+    {
+      "SmartGroupName": "Marketing Department OGNorth AmericaCampaign ManagementManager",
+      "TagUUID": "tag-uuid-1"
+    },
+    {
+      "SmartGroupName": "Sales Department OGNorth AmericaSenior Manager",
+      "TagUUID": "tag-uuid-2"
+    }
+  ],
   "NetScopeSmartgroups": [
     "Marketing Department OGNorth AmericaCampaign ManagementManager",
     "Sales Department OGNorth AmericaSenior Manager"

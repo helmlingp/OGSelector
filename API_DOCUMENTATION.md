@@ -205,6 +205,8 @@ Validates selections and writes them to the registry.
 - `ProcessTagUuid`: UUID of selected process tag (empty if N/A)
 - `role`: Non-empty selections joined with `-` (e.g. `OG Name in UEM-North America-Process 1-Manager`)
 - `Proxy`: `NetSkope` if `role` suffix matches a `NetScopeSmartgroups` entry, otherwise `ZScaler`
+- `SmartGroupTag`: Matched `SmartGroupName` from `SmartGroupTags` based on concatenated selection (empty if no match)
+- `SmartGroupTagUUID`: Matched `TagUUID` from `SmartGroupTags` (empty if no match)
 
 **Example:**
 ```csharp
@@ -222,15 +224,40 @@ Root container for all configuration data.
 
 **Properties:**
 - `BusinessUnits` (`List<BusinessUnit>`): List of business units
+- `SmartGroupTags` (`List<SmartGroupTags>`): Smartgroup-to-tag mapping used for registry lookup
 - `NetScopeSmartgroups` (`List<string>`): Smartgroup names that should use NetSkope proxy; all others use ZScaler
 
 **JSON Mapping:**
 ```json
 {
   "BUs": [...],
+  "SmartGroupTags": [
+    {
+      "SmartGroupName": "OG Name in UEMNorth AmericaProcess 1Manager",
+      "TagUUID": "tag-uuid-1"
+    }
+  ],
   "NetScopeSmartgroups": [
     "OG Name in UEMNorth AmericaProcess 1Manager"
   ]
+}
+```
+
+---
+
+### SmartGroupTags
+
+Represents a mapping entry from concatenated smartgroup name to tag UUID.
+
+**Properties:**
+- `SmartGroupName` (string): Smartgroup identifier used for matching
+- `TagUUID` (string): Tag UUID to write when `SmartGroupName` matches
+
+**JSON Example:**
+```json
+{
+  "SmartGroupName": "OG Name in UEMNorth AmericaProcess 1Manager",
+  "TagUUID": "tag-uuid-12345"
 }
 ```
 
