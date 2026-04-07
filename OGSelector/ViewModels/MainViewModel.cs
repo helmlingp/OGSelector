@@ -20,7 +20,7 @@ public partial class MainViewModel : ObservableObject
     private InputsData _inputsData = new();
 
     [ObservableProperty]
-    private ObservableCollection<BusinessUnit> businessUnits = new();
+    private ObservableCollection<BusinessUnit>? businessUnits;
 
     [ObservableProperty]
     private ObservableCollection<RoleItem> roles = new();

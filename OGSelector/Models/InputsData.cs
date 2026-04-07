@@ -50,6 +50,9 @@ public class BusinessUnit
 
     // Display property for UI binding
     public string Display => BusinessUnitName;
+
+    public override string ToString() => Display;
+
 }
 
 public class ProcessItem

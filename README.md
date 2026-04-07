@@ -172,7 +172,7 @@ The application requires an `inputs.json` file that defines available Business U
 ### User Workflow
 
 1. Application launches and displays the main interface
-2. User selects their Business Unit from the dropdown
+2. User selects or searches for their Business Unit from the searchable dropdown
 3. User selects their Process from the dropdown
 4. User selects their Role from the dropdown
 5. User selects their Geography from the dropdown

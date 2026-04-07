@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.1.8] - 2026-04-07
+
+### Added
+- **Searchable Business Unit combobox**:
+  - added capability to search for `Business Unit`
+
+### Changed
+- **Documentation**: Updated README, DEPLOYMENT, API_DOCUMENTATION to reflect addition of searchable combobox
+
 ## [1.1.7] - 2026-04-02
 
 ### Added
@@ -34,8 +45,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Blank selection support**: Geos, Roles, and Process lists now support blank `""` entries to allow users to make no selection for optional fields
 - **`inputs.json` schema**: `Process` key is now capitalised (was `process`); `Roles`, `Geos`, and `Process` are per-BU nested arrays including `roleUuid`, `geoUuid`, and `processUuid` fields
 - **Documentation**: Updated README, DEPLOYMENT, API_DOCUMENTATION, and inputs.json.template to reflect schema changes and new registry keys
-
----
 
 ## [1.1.5] - 2026-03-02
 
