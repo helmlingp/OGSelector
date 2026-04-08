@@ -101,14 +101,11 @@
                         <RowDefinition Height="100"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Name="CompanyLogoPanel" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Transparent" Grid.Row="0" Grid.Column="0" Margin="0,0,0,0" Width="500" Panel.ZIndex="0" IsHitTestVisible="False">
-                        <Image Name="CompanyLogo" Margin="20,20,0,0" Width="200"/>
+                    <StackPanel Name="CompanyLogoPanel" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Transparent" Grid.Row="0" Grid.Column="0" Panel.ZIndex="0" IsHitTestVisible="False">
+                        <Image Name="CompanyLogo" Margin="30,20,0,0" Width="100"/>
                     </StackPanel>
                     <StackPanel Name="Pretty" VerticalAlignment="Center" HorizontalAlignment="Left" Background="Transparent" Grid.Row="1" Grid.Column="0" Width="500" Margin="0,0,0,0" Panel.ZIndex="0" IsHitTestVisible="False">
                         <Lottie Path="/Assets/glass.json"/>
-                    </StackPanel>
-                    <StackPanel Name="Footer" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="Transparent" Grid.Row="2" Grid.ColumnSpan="2" Width="1200" Margin="0,0,0,0" Panel.ZIndex="0" IsHitTestVisible="False">
-                        <Lottie Path="/Assets/footer.json" Width="1200" Margin="0,0,0,-100"/>
                     </StackPanel>
                     <StackPanel Name="MainPanel" IsVisible="{Binding !HasError}" VerticalAlignment="Center" Background="Transparent" Grid.Row="1" Grid.Column="1" Margin="50,-50,0,0" Height="400" Panel.ZIndex="1" IsHitTestVisible="True">
                         <TextBlock Name="Headline" Classes="h1" HorizontalAlignment="Left"></TextBlock>
