@@ -229,9 +229,9 @@ public partial class MainViewModel : ObservableObject
         Roles = new ObservableCollection<RoleItem>(value?.Roles ?? new List<RoleItem>());
         Geos = new ObservableCollection<GeoItem>(value?.Geos ?? new List<GeoItem>());
         Processes = new ObservableCollection<ProcessItem>(value?.Process ?? new List<ProcessItem>());
-        HasProcess = Processes.Count > 0;
-        HasRoles = Roles.Count > 0;
-        HasGeos = Geos.Count > 0;
+        HasProcess = Processes.Count > 0 && !(Processes.Count == 1 && string.IsNullOrEmpty(Processes[0].ProcessName));
+        HasRoles = Roles.Count > 0 && !(Roles.Count == 1 && string.IsNullOrEmpty(Roles[0].RoleName));
+        HasGeos = Geos.Count > 0 && !(Geos.Count == 1 && string.IsNullOrEmpty(Geos[0].GeoName));
         SelectedRole = Roles.FirstOrDefault();
         SelectedGeo = Geos.FirstOrDefault();
         SelectedProcess = Processes.FirstOrDefault();

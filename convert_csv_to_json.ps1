@@ -1,4 +1,4 @@
-$csvPath = 'C:\Users\Phil\Desktop\new-27-Mar-2026-02-31-46_BusSelectTagV1.0.csv'
+$csvPath = 'C:\Users\Phil\Desktop\08-Apr-2026-03-37-06_ProdBusinessSelectionV1.0.csv'
 $jsonPaths = @(
     'C:\Users\Phil\source\OGSelector\OGSelector\bin\Debug\net10.0\inputs.json'
 )
@@ -25,26 +25,26 @@ $newBUs = @(
         $groupRows = $_.Group
 
         $uemName = Get-FirstNonEmptyValue -SourceRows $groupRows -PropertyName 'OGname'
-        $uemId = Get-FirstNonEmptyValue -SourceRows $groupRows -PropertyName 'IGID'
+        $uemId = Get-FirstNonEmptyValue -SourceRows $groupRows -PropertyName 'OGID'
         $uemUuid = Get-FirstNonEmptyValue -SourceRows $groupRows -PropertyName 'OGUUID'
 
         $geos = @(
             $groupRows |
-            Where-Object { -not [string]::IsNullOrWhiteSpace($_.Region) -or -not [string]::IsNullOrWhiteSpace($_.RegionUUID) } |
+            # Where-Object { -not [string]::IsNullOrWhiteSpace($_.Region) -or -not [string]::IsNullOrWhiteSpace($_.RegionUUID) } |
             Select-Object @{Name = 'geoName'; Expression = { $_.Region } }, @{Name = 'geoUuid'; Expression = { $_.RegionUUID } } |
             Sort-Object geoName, geoUuid -Unique
         )
 
         $roles = @(
             $groupRows |
-            Where-Object { -not [string]::IsNullOrWhiteSpace($_.Role) -or -not [string]::IsNullOrWhiteSpace($_.RoleUUID) } |
+            # Where-Object { -not [string]::IsNullOrWhiteSpace($_.Role) -or -not [string]::IsNullOrWhiteSpace($_.RoleUUID) } |
             Select-Object @{Name = 'roleName'; Expression = { $_.Role } }, @{Name = 'roleUuid'; Expression = { $_.RoleUUID } } |
             Sort-Object roleName, roleUuid -Unique
         )
 
         $processes = @(
             $groupRows |
-            Where-Object { -not [string]::IsNullOrWhiteSpace($_.Process) -or -not [string]::IsNullOrWhiteSpace($_.ProcessUUID) } |
+            # Where-Object { -not [string]::IsNullOrWhiteSpace($_.Process) -or -not [string]::IsNullOrWhiteSpace($_.ProcessUUID) } |
             Select-Object @{Name = 'processName'; Expression = { $_.Process } }, @{Name = 'processUuid'; Expression = { $_.ProcessUUID } } |
             Sort-Object processName, processUuid -Unique
         )

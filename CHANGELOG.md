@@ -9,11 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.9] - 2026-04-10
+
+### Added
+- **Combobox Display**: Added back in capability that hides a combobox if there are no values to display.
+- **Third Party Notices**: Added a `THIRD_PARTY_NOTICES` to attribute usage of other tools such as Avalonia.
+
+### Changed
+- **convert_csv_to_json.psi**: Updated script to create empty values for Geo, Process and Roles if empty cell in CSV
+
 ## [1.1.8] - 2026-04-07
 
 ### Added
-- **Searchable Business Unit combobox**:
-  - added capability to search for `Business Unit`
+- **Searchable Business Unit combobox**: Added capability to search for `Business Unit`
 
 ### Changed
 - **Documentation**: Updated README, DEPLOYMENT, API_DOCUMENTATION to reflect addition of searchable combobox
